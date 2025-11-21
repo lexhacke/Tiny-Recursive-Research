@@ -1,9 +1,15 @@
-# Tiny Recursive Models (TRM-ViT)
+# Tiny Recursive Models (TRM)
 
-A recursive vision transformer architecture for image classification that applies iterative refinement through nested loops over learned representations.
+Recursive transformer architectures that apply iterative refinement through nested loops over learned representations. Includes variants for both vision (TRM-ViT) and language modeling (TRM-LM).
 
 ## Architecture
 
+### Core Recursive Structure
+Both models share the same recursive computation pattern:
+- **Inner loop (N iterations)**: `z = Backbone(x + y + z)`
+- **Outer loop (T iterations)**: Repeatedly applies inner loop and updates `y`
+
+### TRM-ViT (Vision)
 The model combines a frozen ViT backbone with a lightweight recursive head:
 
 1. **Patchifier**: Pretrained ViT (configurable depth) extracts patch embeddings from 224x224 images
@@ -38,6 +44,32 @@ config = {
 from trm_vit import trm_vit
 model = trm_vit(config)
 logits, y, z = model(images)  # images: B x 3 x 224 x 224
+```
+
+### TRM-LM (Language)
+
+A recursive language model using the same iterative refinement:
+
+1. **Embedding**: Token embeddings from vocabulary
+2. **Backbone**: TransformerBackbone with attention + MLP
+3. **Recursive Computation**: Same inner/outer loop structure with padding mask support
+4. **LM Head**: Projects to vocabulary for next-token prediction
+
+```python
+config = {
+    'device': 'cuda',
+    'dim': 192,
+    'context': 100,
+    'vocab_size': 50257,  # GPT-2 tokenizer
+    'n_heads': 8,
+    'depth': 2,
+    'n': 6,
+    'T': 3,
+}
+
+from trm_lm import trm_lm
+model = trm_lm(config)
+logits, y, z = model(tokens, lengths)  # tokens: B x context, lengths: B
 ```
 
 ## Training
