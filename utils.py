@@ -6,6 +6,15 @@ from transformers import AutoImageProcessor, AutoModelForImageClassification
 
 RMSNorm = lambda x : x / x.pow(2).mean(dim=-1, keepdim=True).add(1e-6).sqrt()
 
+def build_padding_mask(x, L, context, mask_value=float('inf')):
+    B, N, D = x.shape
+    padding_mask = torch.full((len(x), context), mask_value)
+    for i in range(B):
+        padding_mask[i, :L[i]] = 0
+        padding_mask[i, i:]
+    return padding_mask
+
+
 def trunc_normal_(shape, mean=0, std=1, upper=2, lower=-2, device="cpu"):
     x = torch.randn(shape, device=device)
     x.clamp_(lower, upper)
