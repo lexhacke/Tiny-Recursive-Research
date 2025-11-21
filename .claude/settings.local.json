@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(\"C:\\Users\\lex\\Tiny-Recursive-Models\\README.md\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
