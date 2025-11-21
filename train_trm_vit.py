@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
-from vision_model.trm_vit import trm_vit
+from trm_vit import trm_vit
 from transformers import AutoImageProcessor
 from datasets import load_dataset
 from torch.utils.data import DataLoader, Dataset
